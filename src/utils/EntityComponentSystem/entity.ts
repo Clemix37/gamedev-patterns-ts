@@ -1,18 +1,21 @@
 import { IComponent } from "./component.h";
-import {IAwake, IUpdate} from "@/utils";
+import { IAwake, IUpdate } from "@/utils";
 
-type constr<T> = { new(...args: unknown[]): T }
+/* eslint-disable @typescript-eslint/ban-types */
+type AbstractComponent<T> = Function & { prototype: T };
+/* eslint-enable @typescript-eslint/ban-types */
+type constr<T> = AbstractComponent<T> | { new (...args: unknown[]): T };
 
 export abstract class Entity implements IAwake, IUpdate {
     protected _components: IComponent[] = [];
-    public Update(deltaTime: number): void { 
-        for(const component of this._components){
+    public Update(deltaTime: number): void {
+        for (const component of this._components) {
             component.Update(deltaTime);
         }
     }
     public Awake(): void {
-        for(const component of this._components){
-          component.Awake();
+        for (const component of this._components) {
+            component.Awake();
         }
     }
     public get Components(): IComponent[] {
