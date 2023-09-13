@@ -29,18 +29,26 @@ describe(">>> Node Draw Component", () => {
         expect(spyClearRect).toBeCalled();
         expect(spyFillRect).toBeCalled();
     });
-    it("should render active color if entity is active and regular color otherwise", () => {
+    it("should render range color if entity is in range, path color if is on path, and regular color otherwise", () => {
         const spyFillRect = jest.spyOn(CanvasLayer.Background, "FillRect");
-
-        comp.Entity.IsActive = true;
+        comp.Entity.IsOnPath = true;
         comp.Update(0);
         expect(spyFillRect).toBeCalledWith(
             comp.Entity.Start,
             comp.Entity.Size,
-            Settings.grid.color.active
+            Settings.grid.color.onPath
+        );
+        comp.Entity.IsOnPath = false;
+
+        comp.Entity.IsInLocomotionRange = true;
+        comp.Update(0);
+        expect(spyFillRect).toBeCalledWith(
+            comp.Entity.Start,
+            comp.Entity.Size,
+            Settings.grid.color.inLocomotionRange
         );
 
-        comp.Entity.IsActive = false;
+        comp.Entity.IsInLocomotionRange = false;
         comp.Update(0);
         expect(spyFillRect).toBeCalledWith(
             comp.Entity.Start,
